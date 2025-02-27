@@ -1,8 +1,42 @@
 // import React from 'react'
 import { IdCard } from "lucide-react"
 import { Link } from "react-router"
+import useUserStore from "../stores/userStore"
+import { useState } from "react"
+import { toast } from "react-toastify"
 
 function Login() {
+    const login = useUserStore(state => state.login)
+
+    const [input, setInput] = useState({
+        email: "",
+        password: "",
+    })
+
+    const hdlChange = async e => {
+        setInput(prv => ({ ...prv, [e.target.name]: e.target.value }))
+    }
+
+    const hdlLogin = async e => {
+        try {
+            const {email, password} = input
+            e.preventDefault()
+
+            console.log(input)
+
+            if(!email.trim() || !password.trim()) {
+                return toast.error("Please fill inputs Email and Password")
+            }
+
+            let data = await login(input)
+            toast.success("Login successfull")
+
+        } catch (error) {
+            const errMsg = error.response?.data?.error || error.message
+            toast.error(errMsg)
+        }
+    }
+
     return (
         <>
             <div className="text-center bg-slate-50 min-h-screen pt-10">
@@ -11,10 +45,24 @@ function Login() {
                 </div>
                 <p className="text-2xl font-semibold text-[#312E81]">NameCard.</p>
                 <div className="flex justify-center px-4 py-6">
-                    <form action="" className="w-[400px]">
+                    <form onSubmit={hdlLogin} className="w-[400px]">
                         <div className="flex gap-4 flex-wrap">
-                            <input type="text" placeholder="Email" className="input input-bordered w-full" />
-                            <input type="text" placeholder="Password" className="input input-bordered w-full" />
+                            <input 
+                                type="email" 
+                                placeholder="Email" 
+                                className="input input-bordered w-full"
+                                name="email"
+                                onChange={hdlChange}
+                                value={input.email}
+                            />
+                            <input 
+                                type="password" 
+                                placeholder="Password" 
+                                className="input input-bordered w-full"
+                                name="password"
+                                onChange={hdlChange}
+                                value={input.password}
+                            />
                             <button className="btn btn-primary w-full">Login</button>
                         </div>
                     </form>

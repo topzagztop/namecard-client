@@ -13,8 +13,8 @@ export default {
   daisyui : {
     themes: [
       {
-        facebook: {
-          "primary": "#4338CA",        // Facebook Blue
+        namecard: {
+          "primary": "#4338CA",        // Blue
           "primary-focus": "#4338CA",  // Darker blue for hover/focus
           "primary-content": "#ffffff", // White text on primary
 
@@ -22,8 +22,8 @@ export default {
           "secondary-focus": "#3B82F6", // Darker green for hover
           "secondary-content": "#ffffff",
 
-          "accent": "#385898",         // Darker blue (used in links)
-          "accent-focus": "#314B81",
+          "accent": "#818CF8",         // Darker blue (used in links)
+          "accent-focus": "#818CF8",
           "accent-content": "#ffffff",
 
           "neutral": "#65676B",        // Gray (used for secondary text)

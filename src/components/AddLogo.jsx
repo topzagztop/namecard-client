@@ -21,9 +21,13 @@ function AddLogo(props) {
                 logo &&
                 <img src={URL.createObjectURL(logo)} alt='preview image' className='h-full block mx-auto' />
             }
-            { !logo && <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>
-                <div className="flex"><File className="w-12 text-gray-400" /> <span className="text-gray-400">{nameInput}</span></div>
-            </div>}
+            { !logo && 
+                <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>
+                    <div className="flex">
+                        <File className="w-12 text-gray-400" /> <span className="text-gray-400">{nameInput}</span>
+                    </div>
+                </div>
+            }
         </div>
     </div>
   )

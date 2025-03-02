@@ -8,7 +8,7 @@ import { Link } from "react-router"
 function AccCard() {
     const user = useUserStore(state => state.user)
     const logout = useUserStore(state => state.logout)
-    console.log(user)
+
   return (
     <div className="bg-slate-50 w-full px-8 py-6">
         <div className="flex justify-between">

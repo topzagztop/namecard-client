@@ -9,6 +9,9 @@ import Contact from "../pages/Contact"
 import useUserStore from "../stores/userStore"
 import Profile from "../pages/Profile"
 import AddNameCard from "../pages/AddNameCard"
+import CardPreview from "../pages/CardPreview"
+import CardShare from "../pages/CardShare"
+import EditNameCard from "../pages/editNameCard"
 
 const guestRouter = createBrowserRouter([
     { path: "/", element: <Home /> },
@@ -26,9 +29,9 @@ const userRouter = createBrowserRouter([
             { path: "/contact", element: <Contact /> },
             { path: "/profile", element: <Profile /> },
             { path: "/addnamecard", element: <AddNameCard /> },
-            { path: "/preview", element: <p>Card Preview</p> },
-            { path: "/share", element: <p>Card Share</p> },
-            { path: "/editnamecard", element: <p>Edit Name Card</p> },
+            { path: "/preview", element: <CardPreview /> },
+            { path: "/share", element: <CardShare /> },
+            { path: "/editnamecard", element: <EditNameCard /> },
             { path: "*", element: <Navigate to="/" /> },
         ]
     },

@@ -21,6 +21,8 @@ function Register() {
     const [file, setFile] = useState(null)
     // console.log(file)
 
+    console.log(input)
+
     const hdlChange = e => {
         setInput(prv => ({ ...prv, [e.target.name]: e.target.value }))
     }

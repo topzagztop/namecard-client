@@ -1,9 +1,11 @@
 
-
 import { Eye, File, X } from "lucide-react"
 import { useEffect, useState } from "react"
 import useThemeStore from "../stores/themeStore"
 import useUserStore from "../stores/userStore"
+import { useNavigate, useParams } from "react-router"
+import { toast } from "react-toastify"
+import axios from "axios"
 
 
 const changeNameCard = {
@@ -19,6 +21,9 @@ const changeNameCard = {
 }
 
 function EditNameCard() {
+    const {id} = useParams()
+    const navigate = useNavigate()
+
     const [profileImage, setProfileImage] = useState(null)
     const [logoImage, setLogoImage] = useState(null)
     const [newSocial, setNewSocial] = useState({ name: "", url: "" })
@@ -26,19 +31,46 @@ function EditNameCard() {
     const getAllTheme = useThemeStore(state => state.getAllTheme)
     const token = useUserStore(state => state.token)
     const themes = useThemeStore(state => state.themes)
-
-
     const [formData, setFormData] = useState(changeNameCard)
 
-    useEffect(() => {
-        if (!themes.length && themes) {
-            getAllTheme(token)
+    const fetchNameCardData = async (id, token) => {
+        try {
+            const rs = await axios.get(`http://localhost:8000/card/${id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            const data = rs.data.data
+            setFormData({
+                businessName: data.businessName,
+                position: data.position,
+                businessTel: data.businessTel,
+                businessEmail: data.businessEmail,
+                logo: data.logo,
+                businessProfile: data.businessProfile,
+                website: data.website,
+                themeId: data.themeId,
+                socialLinks: data.socialLinked.map(link => ({
+                    name: link.socialName,
+                    url: link.url
+                }))
+            })
+            setLogoImage(data.logo)
+            setProfileImage(data.businessProfile)
+        } catch (err) {
+            console.log(err)
+            toast.error("Failed to load data")
         }
-    }, [themes, token, getAllTheme])
+    }
+
+    useEffect(() => {
+        if (id && token) fetchNameCardData(id, token)
+        if (!themes.length && themes) getAllTheme(token)
+    }, [id, token, themes, getAllTheme])
 
     const hdlChange = e => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
+
+    console.log(formData)
 
     const hdlFileLogoChange = e => {
         setLogoImage(e.target.files[0])
@@ -76,13 +108,52 @@ function EditNameCard() {
         })
     }
 
+    const hdlChangeEdit = async (e) => {
+        e.preventDefault()
+        const body = new FormData();
+    
+        body.append("businessName", formData.businessName);
+        body.append("position", formData.position);
+        body.append("businessTel", formData.businessTel);
+        body.append("businessEmail", formData.businessEmail);
+        body.append("website", formData.website);
+        body.append("themeId", formData.themeId);
+        body.append("socialLinks", JSON.stringify(formData.socialLinks));
+    
+
+        if (logoImage && logoImage.constructor.name === "File") {
+            body.append("logo", logoImage);
+        } else if (typeof logoImage === "string") {
+            body.append("logo", logoImage);
+        }
+    
+        if (profileImage && profileImage.constructor.name === "File") {
+            body.append("businessProfile", profileImage);
+        } else if (typeof profileImage === "string") {
+            body.append("businessProfile", profileImage);
+        }
+    
+        try {
+            const rs = await axios.patch(`http://localhost:8000/card/editnamecard/${id}`, body, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            toast.success("NameCard updated successfully!");
+            navigate("/");
+        } catch (err) {
+            console.log(err);
+            toast.error("Failed to update NameCard");
+        }
+    };
+
 
     return (
         <div className="bg-slate-50 w-full px-8 py-6">
             <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-semibold">Edit Name Card</h1>
             </div>
-            <form className="flex justify-center">
+            <form onSubmit={hdlChangeEdit} className="flex justify-center">
                 <div className="w-[400px]">
                     <div className="flex justify-center px-4 py-12">
                         <div className="flex gap-4 flex-wrap w-full">
@@ -132,7 +203,7 @@ function EditNameCard() {
                                     onClick={() => document.getElementById('input-logo').click()}
                                 >
                                     <input type="file" className="hidden" id="input-logo" onChange={hdlFileLogoChange} />
-                                    {logoImage && <img src={URL.createObjectURL(logoImage)} alt='preview logo' className='h-full block mx-auto' />}
+                                    {logoImage && <img src={typeof logoImage === "string" ? logoImage : URL.createObjectURL(logoImage)} alt='preview logo' className='h-full block mx-auto' />}
                                     {!logoImage && <div className="flex justify-start items-center h-full"><File className="w-12 text-gray-400" /> <span className="text-gray-400">Upload Logo</span></div>}
                                 </div>
                             </div>
@@ -142,7 +213,7 @@ function EditNameCard() {
                                     onClick={() => document.getElementById('input-profile').click()}
                                 >
                                     <input type="file" className="hidden" id="input-profile" onChange={hdlFileProfileChange} />
-                                    {profileImage && <img src={URL.createObjectURL(profileImage)} alt='preview logo' className='h-full block mx-auto' />}
+                                    {profileImage && <img src={typeof profileImage === "string" ? profileImage : URL.createObjectURL(profileImage)} alt='preview logo' className='h-full block mx-auto' />}
                                     {!profileImage && <div className="flex justify-start items-center h-full"><File className="w-12 text-gray-400" /> <span className="text-gray-400">Upload Banner Profile</span></div>}
                                 </div>
                             </div>

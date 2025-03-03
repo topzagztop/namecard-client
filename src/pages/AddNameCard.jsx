@@ -123,7 +123,7 @@ function AddNameCard() {
         }
 
         try {
-            const rs = await axios.post("http://localhost:8000/cards/create", body, {
+            const rs = await axios.post("http://localhost:8000/card/create", body, {
                 headers: { Authorization: `Bearer ${token}` },
               })
 

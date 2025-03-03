@@ -29,9 +29,9 @@ const userRouter = createBrowserRouter([
             { path: "/contact", element: <Contact /> },
             { path: "/profile", element: <Profile /> },
             { path: "/addnamecard", element: <AddNameCard /> },
-            { path: "/preview", element: <CardPreview /> },
-            { path: "/share", element: <CardShare /> },
-            { path: "/editnamecard", element: <EditNameCard /> },
+            { path: "/preview/:id", element: <CardPreview /> },
+            { path: "/share/:id", element: <CardShare /> },
+            { path: "/editnamecard/:id", element: <EditNameCard /> },
             { path: "*", element: <Navigate to="/" /> },
         ]
     },

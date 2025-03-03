@@ -10,10 +10,30 @@ const useUserStore = create( persist((set, get)=> ({
         set({token: rs.data.token, user: rs.data.user})
         return rs.data
     },
-    logout: () => set({token: "", user: null})
+    logout: () => set({token: "", user: null}),
+    fetchProfile: async () => {
+        const token = get().token
+        if(token) {
+            try {
+                const rs = await axios.get("http://localhost:8000/user/me", {
+                    headers: {Authorization: `Bearer ${token}`}
+                })
+                set({user: rs.data.user}) 
+            } catch (err) {
+                console.log(err)
+                set({token: "", user: null}) 
+            }
+        }
+    }
 }),{
     name: "state",
     storage: createJSONStorage(()=> localStorage)
 }))
+
+useUserStore.subscribe((state) => state.token), (token) => {
+    if(token) {
+        useUserStore.getState().fetchProfile()
+    }
+}
 
 export default useUserStore

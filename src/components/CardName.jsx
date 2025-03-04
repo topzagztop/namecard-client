@@ -16,11 +16,11 @@ function CardName(props) {
 
                 <Link 
                     className="rounded-full bg-indigo-600 w-[30px] h-[30px] text-white flex justify-center items-center cursor-pointer hover:bg-blue-500" 
-                    to={`/preview/:id`}>
+                    to={`/preview/${id}`}>
                     <Eye className="w-[13px] h-[13px]" />
                 </Link>
 
-                <Link to={`/share/:id`} className="btn btn-secondary min-h-8 h-8">SHARE</Link>
+                <Link to={`/share/${id}`} className="btn btn-secondary min-h-8 h-8">SHARE</Link>
             </div>
             <div
                 onClick={()=> onDelete(id)} 

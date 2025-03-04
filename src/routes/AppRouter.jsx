@@ -12,11 +12,13 @@ import AddNameCard from "../pages/AddNameCard"
 import CardPreview from "../pages/CardPreview"
 import CardShare from "../pages/CardShare"
 import EditNameCard from "../pages/editNameCard"
+import NameCard from "../pages/NameCard"
 
 const guestRouter = createBrowserRouter([
     { path: "/", element: <Home /> },
     { path: "/login", element: <Login /> },
     { path: "/register", element: <Register /> },
+    { path: "/namecard/:slug", element: <NameCard />},
     { path: "*", element: <Navigate to="/" /> },
 ])
 

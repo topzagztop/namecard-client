@@ -5,14 +5,21 @@ import CardContact from "../components/CardContact"
 import { toast } from "react-toastify"
 import axios from "axios"
 import useUserStore from "../stores/userStore"
+import ProfileHeader from "../components/ProfileHeader"
+import useNameCardStore from "../stores/nameCardStore"
 
 function Contact() {
-  const [contacts, setContacts] = useState([])
-  const [loading, setLoading] = useState()
   const user = useUserStore(state => state.user)
   const token = useUserStore(state => state.token)
+  const logout = useUserStore(state => state.logout)
+  const [contacts, setContacts] = useState([])
+  const [loading, setLoading] = useState()
+  const clearNameCard = useNameCardStore(state => state.clearNameCard)
 
-  console.log(user.id)
+  const hdlLogout = () => {
+    logout()
+    clearNameCard()
+  }
 
   const fetchContacts = async () => {
     if (!user || !user.id) {
@@ -60,60 +67,41 @@ function Contact() {
   console.log(contacts)
 
   return (
-    <div className="bg-slate-50 w-full px-8 py-6">
-      <h1 className="text-2xl font-semibold">Contact Us</h1>
-      <div className="flex flex-wrap py-4 gap-4">
-        {contacts.length > 0 ? (
-          contacts.map((contact) => {
-            const namecard = contact.contacts?.namecard;
-            const user = contact.user;
+    <div className="bg-slate-50 w-full px-8 py-6 md:flex md:justify-center md:pb-20">
+      <div className="md:min-w-[1024px]">
+        <ProfileHeader
+              user={user}
+              hdlLogout={hdlLogout}
+        />
+        <div className="py-8">
+          <hr />
+        </div>
+        <h1 className="text-2xl font-semibold">Contact Us</h1>
+        <div className="flex flex-wrap py-4 gap-4">
+          {contacts.length > 0 ? (
+            contacts.map((contact) => {
+              const namecard = contact.contacts?.namecard;
+              const userContact = contact.contacts?.namecard?.user;
 
-            return (
-              <CardContact
-                key={contact.id}
-                id={contact.contactId}
-                imgProfile={user.profileImage || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"} // ✅ กันกรณีไม่มีรูป
-                imgBrand={namecard.logo || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"} // ✅ กันกรณีไม่มีรูป
-                phone={namecard.businessTel}
-                bussinessName={namecard.businessName}
-                userName={`${user.firstName} ${user.lastName}`}
-                position={namecard.position}
-                email={namecard.businessEmail}
-                hdlDeleteContact={hdlDeleteContact}
-              />
-            );
-          })
-        ) : (
-          <p>No contacts found.</p>
-        )}
-
-        {/* <CardContact 
-                imgProfile="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                imgBrand="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                phone="088-545-9883"
-                bussinessName="Opn Pro Software Solution"
-                userName="Andy Codecamp"
-                position="Web Developer"
-                email="andy@opn.coo"
-             />
-            <CardContact 
-                imgProfile="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                imgBrand="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                phone="088-545-9883"
-                bussinessName="Opn Pro Software Solution"
-                userName="Andy Codecamp"
-                position="Web Developer"
-                email="andy@opn.coo"
-             />
-             <CardContact 
-                imgProfile="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                imgBrand="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                phone="088-545-9883"
-                bussinessName="Opn Pro Software Solution"
-                userName="Andy Codecamp"
-                position="Web Developer"
-                email="andy@opn.coo"
-             /> */}
+              return (
+                <CardContact
+                  key={contact.id}
+                  id={contact.contactId}
+                  imgProfile={userContact.profileImage || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"} // ✅ กันกรณีไม่มีรูป
+                  imgBrand={namecard.logo || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"} // ✅ กันกรณีไม่มีรูป
+                  phone={namecard.businessTel}
+                  bussinessName={namecard.businessName}
+                  userName={`${userContact.firstName} ${userContact.lastName}`}
+                  position={namecard.position}
+                  email={namecard.businessEmail}
+                  hdlDeleteContact={hdlDeleteContact}
+                />
+              );
+            })
+          ) : (
+            <p>No contacts found.</p>
+          )}
+        </div>
       </div>
     </div>
   )

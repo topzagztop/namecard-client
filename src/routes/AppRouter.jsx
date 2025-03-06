@@ -34,6 +34,7 @@ const userRouter = createBrowserRouter([
             { path: "/preview/:id", element: <CardPreview /> },
             { path: "/share/:id", element: <CardShare /> },
             { path: "/editnamecard/:id", element: <EditNameCard /> },
+            { path: "/namecard/:slug", element: <NameCard />},
             { path: "*", element: <Navigate to="/" /> },
         ]
     },

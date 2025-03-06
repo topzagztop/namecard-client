@@ -1,9 +1,10 @@
 import { ChevronLeft, IdCard } from "lucide-react"
-import { Link } from "react-router"
+import { Link, useNavigate } from "react-router"
 import { toast } from "react-toastify"
 import { useState } from "react"
 import AddPicture from "../components/AddPicture"
-import axios from "axios"
+import useUserStore from "../stores/userStore"
+import Button from "../components/Button"
 
 const initInput = {
     email: "",
@@ -19,9 +20,11 @@ const initInput = {
 function Register() {
     const [input, setInput] = useState(initInput)
     const [file, setFile] = useState(null)
-    // console.log(file)
+    const navigate = useNavigate()
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
-    console.log(input)
+    const registerUser = useUserStore(state => state.registerUser)
+
 
     const hdlChange = e => {
         setInput(prv => ({ ...prv, [e.target.name]: e.target.value }))
@@ -34,11 +37,14 @@ function Register() {
 
     const hdlRegister = async e => {
         e.preventDefault()
+        setIsSubmitting(true)
         const { email, password, confirmPassword, firstName, lastName, phone, jobPosition } = input
         if (!email.trim() || !password.trim() || !confirmPassword.trim() || !firstName.trim() || !lastName.trim() || !phone.trim() || !jobPosition.trim()) {
+            setIsSubmitting(false)
             return toast.error("Please fill all input")
         }
         if (password !== confirmPassword) {
+            setIsSubmitting(false)
             return toast.error("Password and Confirm Password unmatched !!!")
         }
 
@@ -60,17 +66,20 @@ function Register() {
         }
 
         try {
-            const rs = await axios.post("http://localhost:8000/auth/register", body)
+            const rs = await registerUser(body)
 
             hdlClearInput()
             setFile(null)
-
             toast.success("Register Successful")
+            
+            navigate("/login")
 
         } catch (error) {
             console.log(error)
             const errMsg = error.response?.data?.error || error.message
             toast.error(errMsg)
+        } finally {
+            setIsSubmitting(false)
         }
     }
 
@@ -146,10 +155,13 @@ function Register() {
                                 value={input.jobPosition}
                             />
                             <AddPicture className="text-blue-600" file={file} setFile={setFile} nameInput="Upload Profile" />
-                            <button className="btn btn-secondary w-full">Create new account</button>
+                            <Button
+                                isSubmitting={isSubmitting}
+                                label="Create new account"
+                            />
                             <button
                                 type="button"
-                                className="btn btn-primary w-full"
+                                className="btn btn-secondary w-full"
                                 onClick={hdlClearInput}
                             >Reset</button>
                         </div>
